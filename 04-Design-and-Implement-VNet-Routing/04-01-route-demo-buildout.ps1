@@ -51,8 +51,7 @@ az vm create --resource-group $rg --name vm-nva --image UbuntuLTS --generate-ssh
 
 az network nic update --name vm-nvaVMNic --resource-group $rg --ip-forwarding true
 
-az vm extension set --resource-group $rg --vm-name vm-nva --name customScript --publisher Microsoft.Azure.Extensions --settings '{\"commandToExecute\":\"sudo sysctl -w net.ipv4.ip_forward=1\"}'
-
+az vm extension set --resource-group 'test-rg' --vm-name vm-nva --name customScript --publisher Microsoft.Azure.Extensions --settings '"{\"commandToExecute\":\"sudo sysctl -w net.ipv4.ip_forward=1\"}"'
 ##############################
 ######## END - SCRIPT ########
 ##############################
