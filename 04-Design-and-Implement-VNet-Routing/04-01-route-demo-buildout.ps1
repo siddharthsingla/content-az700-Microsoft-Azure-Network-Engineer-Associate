@@ -16,10 +16,10 @@
 
 # Get resource group and set to variable $rg
 #$rg = az group list --query '[].name' -o tsv
-$rg = 'test-rg'
+$rg = "test-rg"
 # Assign location variable to playground resource group location
 #$location = az group list --query '[].location' -o tsv
-$location = 'southcentralus'
+$location = "southcentralus"
 
 ##############################
 ##### END - VARIABLES ######
