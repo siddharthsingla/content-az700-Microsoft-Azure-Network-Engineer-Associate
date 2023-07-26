@@ -15,10 +15,11 @@
 ##############################
 
 # Get resource group and set to variable $rg
-$rg = az group list --query '[].name' -o tsv
-
+#$rg = az group list --query '[].name' -o tsv
+$rg = 'test-rg'
 # Assign location variable to playground resource group location
-$location = az group list --query '[].location' -o tsv
+#$location = az group list --query '[].location' -o tsv
+$location = 'southcentralus'
 
 ##############################
 ##### END - VARIABLES ######
@@ -39,18 +40,18 @@ az network vnet create --name cake-spoke2-vnet --resource-group $rg --location $
 
 # Create three Linux machines. One in each network
 
-az vm create --resource-group $rg --name spoke-1-vm --image UbuntuLTS --generate-ssh-keys --public-ip-address myPublicIP-spoke-1-vm --public-ip-sku Standard --vnet-name cake-spoke1-vnet --subnet spoke-1-subnet-a --size Standard_B1s --no-wait
+az vm create --resource-group $rg --name spoke-1-vm --image UbuntuLTS --generate-ssh-keys --public-ip-address myPublicIP-spoke-1-vm --public-ip-sku Standard --vnet-name cake-spoke1-vnet --subnet spoke-1-subnet-a --size Standard_B1s --storage-sku Standard_LRS --no-wait
 
-az vm create --resource-group $rg --name spoke-2-vm --image UbuntuLTS --generate-ssh-keys --public-ip-address myPublicIP-spoke-2-vm --public-ip-sku Standard --vnet-name cake-spoke2-vnet --subnet spoke-2-subnet-a --size Standard_B1s --no-wait
+az vm create --resource-group $rg --name spoke-2-vm --image UbuntuLTS --generate-ssh-keys --public-ip-address myPublicIP-spoke-2-vm --public-ip-sku Standard --vnet-name cake-spoke2-vnet --subnet spoke-2-subnet-a --size Standard_B1s --storage-sku Standard_LRS --no-wait
 
-az vm create --resource-group $rg --name hub-nva-vm --image UbuntuLTS --generate-ssh-keys --public-ip-address myPublicIP-nva --public-ip-sku Standard --vnet-name cake-hub-vnet --subnet nva-subnet --size Standard_B1s
+az vm create --resource-group $rg --name hub-nva-vm --image UbuntuLTS --generate-ssh-keys --public-ip-address myPublicIP-nva --public-ip-sku Standard --vnet-name cake-hub-vnet --subnet nva-subnet --size Standard_B1s --storage-sku Standard_LRS
 
 # Update the NVA VM to enable IP forwarding. This needs to be enabled on both the VM NIC and within the OS
 # via extension.
 
 az network nic update --name hub-nva-vmVMNic --resource-group $rg --ip-forwarding true
 
-az vm extension set --resource-group $rg --vm-name hub-nva-vm --name customScript --publisher Microsoft.Azure.Extensions --settings '{\"commandToExecute\":\"sudo sysctl -w net.ipv4.ip_forward=1\"}'
+az vm extension set --resource-group $rg --vm-name hub-nva-vm --name customScript --publisher Microsoft.Azure.Extensions --settings '"{\"commandToExecute\":\"sudo sysctl -w net.ipv4.ip_forward=1\"}"'
 
 ##############################
 ######## END - SCRIPT ########
